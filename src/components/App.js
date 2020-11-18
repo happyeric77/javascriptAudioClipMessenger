@@ -1,11 +1,13 @@
-import app from '../firebase'
+import Signup from './Signup';
+import AuthProvider from '../contexts/AuthContext';
 
-app.auth().signInWithEmailAndPassword('happyeric77@gmail.com', 'd9133102.').then((result)=>{
-  console.log(result)
-})
 
 function App() {
-  return <div className="h1">Hellow world</div>
+  return (
+    <AuthProvider>
+      <Signup />
+    </AuthProvider>
+  )
 }
 
 export default App;
