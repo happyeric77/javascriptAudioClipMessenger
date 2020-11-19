@@ -2,41 +2,36 @@ import React, {useRef, useState} from 'react'
 import {useAuth} from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 
-export default function Signup() {
+export default function Login() {
+    
     const emailRef = useRef()
     const passwordRef = useRef()
-    const confirmPassRef = useRef()
-    const {signup} = useAuth()
+    const {login} = useAuth()
     const [error, setError] = useState()
-    const [signupState, setSignupState] = useState()
+    const [loginState, setLoginState] = useState()
     const [loading, setLoading] = useState(false)
     const history = useHistory()
 
-
     async function handleSubmit(e){
         e.preventDefault()
-        if (passwordRef.current.value !== confirmPassRef.current.value){
-            setError('Passwords do not match')
-        }else{
-            setLoading(true)
-            await signup(emailRef.current.value, passwordRef.current.value).then(userCred=>{
-                setSignupState('You have signed up')
-                setError(null)
-                history.push('/')
-            }).catch(error=>{
-                setError(error.message)
-            });
-            setLoading(false)
-        }
+        setLoading(true)
+        await login(emailRef.current.value, passwordRef.current.value).then((user)=>{
+            setError(null)
+            setLoginState('You have logged in successfully')
+            history.push('/')
+        }).catch((error)=>{
+            setError(error.message)
+        })
+        setLoading(false)
     }
 
     return (
         <div className='d-flex flex-column mt-5 pt-5 align-items-center'>
             <div className="card mt-5 p-3" style={{ width: '18rem' }} >
-                <div className="h1 mb-3" style={{textAlign: 'center'}}> Sign up </div>
+                <div className="h1 mb-3" style={{textAlign: 'center'}}> Login </div>
                 {error && <div className="alert alert-danger" role="alert">{error}</div>}
-                {signupState && <div className="alert alert-success" role="alert">{signupState}</div>}
-                {loading && <div className="alert alert-dark" role="alert">Loading ... </div>}
+                {loginState && <div className="alert alert-success" role="alert">{loginState}</div>}
+                {loading && <div className="alert alert-dark" role="alert">Loading...</div>}
                 <form>
                     <div className="form-group">
                         <label htmlFor="inputEmail">Email address</label>
@@ -45,16 +40,11 @@ export default function Signup() {
                     <div className="form-group">
                         <label htmlFor="inputPassword">Password</label>
                         <input ref={passwordRef} type="password" className="form-control" id="inputPassword" placeholder="Password"/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">Confirm password</label>
-                        <input ref={confirmPassRef} type="password" className="form-control" id="confirmPassword" placeholder="Password"/>
-                    </div>
-                    
+                    </div>                    
                     <button onClick={handleSubmit} type="submit" className="btn btn-primary" style={{width:'100%'}}>Submit</button>
                 </form>  
-            </div>
-            <div className="mt-2">Aready have an account? <Link to='/login'>login</Link></div>
+            </div> 
+            <div className="mt-2">Need an account? <Link to='/signup'>Sign up</Link></div>         
         </div>
     )
 }
