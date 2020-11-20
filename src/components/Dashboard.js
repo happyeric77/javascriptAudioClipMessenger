@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import {useAuth} from '../contexts/AuthContext'
+import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
     const [error, setError] = useState()
@@ -20,7 +21,8 @@ export default function Dashboard() {
                 {error && <div className="alert alert-danger" role="alert">{error}</div>}
                 <div className="h5 w-100">Email:</div>
                 <div>{currentUser.email}</div>
-                <button onClick={handleSubmit} className="btn btn-primary mt-3" style={{width:'100%'}}>Logout</button>                
+                <Link to='/' className="btn btn-primary mt-3" style={{width:'100%'}}>Update profile</Link>
+                <button onClick={handleSubmit} className="btn btn-primary mt-3" style={{width:'100%'}}>Logout</button>            
             </div>       
         </div>
     )

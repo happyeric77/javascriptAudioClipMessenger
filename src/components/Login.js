@@ -42,6 +42,7 @@ export default function Login() {
                         <input ref={passwordRef} type="password" className="form-control" id="inputPassword" placeholder="Password"/>
                     </div>                    
                     <button onClick={handleSubmit} type="submit" className="btn btn-primary" style={{width:'100%'}}>Submit</button>
+                    <Link to='/reset-password'>Forgot the password?</Link>
                 </form>  
             </div> 
             <div className="mt-2">Need an account? <Link to='/signup'>Sign up</Link></div>         

@@ -15,7 +15,8 @@ export default function AuthProvider({children}) {
         currentUser,
         signup,
         login,
-        logout
+        logout,
+        resetPassword,
     }
 
     function signup(email, password){
@@ -28,6 +29,10 @@ export default function AuthProvider({children}) {
 
     function logout(){
         return app.auth().signOut()
+    }
+
+    function resetPassword(email){
+        return app.auth().sendPasswordResetEmail(email)
     }
 
     useEffect(()=>{
