@@ -1,27 +1,21 @@
 import React from 'react'
+import { useReactMediaRecorder } from "react-media-recorder";
 
-
-
-export default function Test() {
-    function handleStartRecord(){
-        try{
-            navigator.mediaDevices.getUserMedia({audio: true}).then(
-                stream => {
-                    console.log("Mic authorized！");
-                }).catch(() => {
-                    console.error("Fail to get Mic!");
-                });
-        } catch {
-            console.error("Browser does not support getUserMedia");
-        }
-    }
+export default function Test(){
+    const {
+        status,
+        startRecording,
+        stopRecording,
+        mediaBlobUrl,
+    } = useReactMediaRecorder({ Audio: true });
     
-    
-
     return (
         <div>
-            <audio>?? dcdcdcdc</audio>
-            <button className='btn btn-primary' onClick={handleStartRecord}>start</button>
+        <p>{status}</p>
+        <button onClick={startRecording}>Start Recording</button>
+        <button onClick={stopRecording}>Stop Recording</button>
+        <audio src={mediaBlobUrl} controls/>
+        <div>{mediaBlobUrl}</div>
         </div>
-    )
+    );
 }

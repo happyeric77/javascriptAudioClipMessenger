@@ -8,26 +8,40 @@ export function useDatabase(){
 }
 
 export default function DatabaseProvider({children}) {
-    const [datas, setData] = useState()
+    const [audioDatas, setAudioDatas] = useState()
+    const [userDatas, setUserDatas] = useState()
     const [loading, setLoading] = useState(true)
-    const dbRef = app.database().ref('records/')
+    const audioDbRef = app.database().ref('records/')
+    const userDbRef = app.database().ref('users/')
 
     useEffect(()=>{
-        dbRef.on('value', (snapshot)=>{
-            const raw = snapshot.val()
-            const datas = Object.keys(raw).map(key=> {
-                const tempdatas = {...raw[key], id: key}
-                return tempdatas
-            })            
-            setData(datas)
+        const promises = [
+            audioDbRef.on('value', (snapshot)=>{
+                const raw = snapshot.val()
+                const datas = Object.keys(raw).map(key=> {
+                    const tempdatas = {...raw[key], id: key}
+                    return tempdatas
+                })            
+                setAudioDatas(datas)
+            }),
+            userDbRef.on('value', (snapshot)=>{
+                const raw = snapshot.val()
+                const datas = Object.keys(raw).map(key=> {
+                    const tempdatas = {...raw[key], id: key}
+                    return tempdatas
+                })            
+                setUserDatas(datas)
+            })
+        ]
+        Promise.all(promises).then(()=>{
             setLoading(false)
-        })
+        }).catch((e)=>console.log(e))
     }, [])
     
     const value = {
-        datas,
+        audioDatas,
+        userDatas,
     }
-
     return (
         <DatabaseContext.Provider value={value}>
             {!loading && children}

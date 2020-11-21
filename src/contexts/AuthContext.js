@@ -9,7 +9,7 @@ export function useAuth(){
 
 
 export default function AuthProvider({children}) {
-
+    const [loading, setLoading] = useState(true)
     const [currentUser, setCurrentUser] = useState()
     const value = {
         currentUser,
@@ -38,13 +38,14 @@ export default function AuthProvider({children}) {
     useEffect(()=>{
         const unsubscribe = app.auth().onAuthStateChanged(user=>{
             setCurrentUser(user)
+            setLoading(false)
         })
         return unsubscribe
     },[])
 
     return (
         <AuthContext.Provider value={value}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     )
 }

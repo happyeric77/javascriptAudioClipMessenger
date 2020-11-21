@@ -6,14 +6,14 @@ import Login from './Login';
 import PrivateRoute from './PrivateRoute'
 import ResetPassword from './ResetPassword';
 import DatabaseProvider from '../contexts/DatabaseContext';
-import Test from './Test';
+import '../css/App.css'
 
 function App() {
   return (
+    <div className='App'>
     <Router>
       <AuthProvider>
         <DatabaseProvider>
-          <Test/>
           <Switch>
             <PrivateRoute exact path='/' component={Dashboard} />
             <Route path='/signup' component={Signup} />
@@ -23,6 +23,7 @@ function App() {
         </DatabaseProvider>
       </AuthProvider>
     </Router>
+    </div>
   )
 }
 
