@@ -5,14 +5,15 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import Login from './Login';
 import PrivateRoute from './PrivateRoute'
 import ResetPassword from './ResetPassword';
-import Test from './Test';
 import DatabaseProvider from '../contexts/DatabaseContext';
+import Test from './Test';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <DatabaseProvider>
+          <Test/>
           <Switch>
             <PrivateRoute exact path='/' component={Dashboard} />
             <Route path='/signup' component={Signup} />

@@ -1,20 +1,27 @@
-// import React from 'react'
-// // import app from '../firebase'
-// import {useDatabase} from '../contexts/DatabaseContext'
-
-// export default function Test() {
-//     // const db = app.database()
-//     const {dbRef} = useDatabase()
-//     dbRef.on('value', (snapshot, b)=>{
-//         console.log(JSON.stringify(snapshot))
-//         console.log(b)
-//     })
+import React from 'react'
 
 
 
-//     return (
-//         <div>
-//             Test
-//         </div>
-//     )
-// }
+export default function Test() {
+    function handleStartRecord(){
+        try{
+            navigator.mediaDevices.getUserMedia({audio: true}).then(
+                stream => {
+                    console.log("Mic authorized！");
+                }).catch(() => {
+                    console.error("Fail to get Mic!");
+                });
+        } catch {
+            console.error("Browser does not support getUserMedia");
+        }
+    }
+    
+    
+
+    return (
+        <div>
+            <audio>?? dcdcdcdc</audio>
+            <button className='btn btn-primary' onClick={handleStartRecord}>start</button>
+        </div>
+    )
+}
