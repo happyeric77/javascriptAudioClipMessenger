@@ -6,22 +6,26 @@ import Login from './Login';
 import PrivateRoute from './PrivateRoute'
 import ResetPassword from './ResetPassword';
 import DatabaseProvider from '../contexts/DatabaseContext';
+import UpdateProfile from './UpdateProfile';
 import '../css/App.css'
 
 function App() {
   return (
     <div className='App'>
     <Router>
-      <AuthProvider>
-        <DatabaseProvider>
+      <DatabaseProvider>
+        <AuthProvider>
+        
           <Switch>
             <PrivateRoute exact path='/' component={Dashboard} />
+            <PrivateRoute path='/update-profile' component={UpdateProfile} />
             <Route path='/signup' component={Signup} />
             <Route path='/login' component={Login} />
             <Route path='/reset-password' component={ResetPassword} />
           </Switch>
-        </DatabaseProvider>
-      </AuthProvider>
+        
+        </AuthProvider>
+      </DatabaseProvider>
     </Router>
     </div>
   )

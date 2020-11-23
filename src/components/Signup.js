@@ -1,31 +1,41 @@
 import React, {useRef, useState} from 'react'
 import {useAuth} from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
+import {useDatabase} from '../contexts/DatabaseContext'
 
 export default function Signup() {
+    const groupRef = useRef()
+    const groupSecretRef = useRef()
     const emailRef = useRef()
     const passwordRef = useRef()
     const confirmPassRef = useRef()
     const {signup} = useAuth()
+    const {groupDatas, writeUserDatas, uuid} = useDatabase()
     const [error, setError] = useState()
     const [signupState, setSignupState] = useState()
     const [loading, setLoading] = useState(false)
     const history = useHistory()
 
-
     async function handleSubmit(e){
         e.preventDefault()
         if (passwordRef.current.value !== confirmPassRef.current.value){
             setError('Passwords do not match')
+        }else if (groupSecretRef.current.value !== JSON.stringify(groupDatas[groupRef.current.value]).replaceAll('"','')){
+            setError('Group secret does not match')
         }else{
             setLoading(true)
+            await writeUserDatas(uuid(), emailRef.current.value, groupRef.current.value).then(()=>{
+                setError(null)
+            }).catch(error=>{
+                setError(error.message)
+            })
             await signup(emailRef.current.value, passwordRef.current.value).then(userCred=>{
                 setSignupState('You have signed up')
-                setError(null)
                 history.push('/')
             }).catch(error=>{
                 setError(error.message)
             });
+            
             setLoading(false)
         }
     }
@@ -38,6 +48,14 @@ export default function Signup() {
                 {signupState && <div className="alert alert-success" role="alert">{signupState}</div>}
                 {loading && <div className="alert alert-dark" role="alert">Loading ... </div>}
                 <form>
+                    <div className="form-group">
+                        <label htmlFor="inputGroup">Group</label>
+                        <input ref={groupRef} className="form-control" id="inputGroup" aria-describedby="groupHelp" placeholder="Enter Group Name"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="inputGroupSecret">Group Secret</label>
+                        <input ref={groupSecretRef} className="form-control" id="inputGroupSecret" aria-describedby="groupHelp" placeholder="Enter Group Secret"/>
+                    </div>
                     <div className="form-group">
                         <label htmlFor="inputEmail">Email address</label>
                         <input ref={emailRef} type="email" className="form-control" id="inputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>

@@ -11,13 +11,16 @@ export function useAuth(){
 export default function AuthProvider({children}) {
     const [loading, setLoading] = useState(true)
     const [currentUser, setCurrentUser] = useState()
+
     const value = {
         currentUser,
         signup,
         login,
         logout,
         resetPassword,
+        updatePasword,
     }
+
 
     function signup(email, password){
         return app.auth().createUserWithEmailAndPassword(email, password)
@@ -35,11 +38,17 @@ export default function AuthProvider({children}) {
         return app.auth().sendPasswordResetEmail(email)
     }
 
+    function updatePasword(user, password){
+        return user.updatePassword(password)
+    }
+
     useEffect(()=>{
         const unsubscribe = app.auth().onAuthStateChanged(user=>{
             setCurrentUser(user)
+            
             setLoading(false)
-        })
+        })        
+        
         return unsubscribe
     },[])
 
