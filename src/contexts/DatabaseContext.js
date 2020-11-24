@@ -16,23 +16,61 @@ export default function DatabaseProvider({children}) {
     const userDbRef = app.database().ref('users/')
     const groupDbRef = app.database().ref('groupctl/')
     const imageStorageRef = app.storage().ref('images/')
+    const audioStorageRef = app.storage().ref('records/')
 
     const value = {
         audioDatas,
         userDatas,
         groupDatas,
         writeUserDatas,
+        writeAudioDatas,
         updateUserName,
         uuid,
         updateProfilePhoto,
         retrieveUserDatas,
+        listAllUserDatas,
+        getUserdatas,
         updateUserGroup,
+        uploadAudio,
+        audioIdGen,
     }
     
 
     function uuid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
     }
+
+    function audioIdGen(userEmail){
+        // {group}-{email}-{date}
+        var audioId = null
+        retrieveUserDatas(userEmail).once('value',(snapshot)=>{
+            snapshot.forEach(item=>{
+                audioId = `${item.val().group}-${item.val().id}-${Date.now()}`
+            })
+        })
+        return audioId
+    }
+    
+    function retrieveUserDatas(email){
+        return userDbRef.orderByChild('email').equalTo(email)
+    }
+    //Retrieve specific user data object by email adress
+    function getUserdatas(userEmail){
+        var user = null
+        retrieveUserDatas(userEmail).once('value',(snapshot)=>{
+            snapshot.forEach(item=>{
+                user = item.val()
+            })
+        })
+        return user
+    }
+
+    //Retrieve all users' list by the order
+    function listAllUserDatas(keyword){
+        return userDbRef.orderByChild('email').startAt(keyword)
+    }
+
+    
 
     function writeUserDatas(id, email, group){
         return (
@@ -46,6 +84,29 @@ export default function DatabaseProvider({children}) {
             })
         )
     }
+
+    function writeAudioDatas(AudioId, from, group, name, title, url){
+        const date = new Date()
+        const [year, month, day, hr, min, sec] = [
+            date.getFullYear(),
+            date.getMonth()+1,
+            date.getDate(),
+            date.getHours(),
+            date.getMinutes(),
+            date.getSeconds()
+        ]
+        return (
+            app.database().ref(`records/${AudioId}/`).set({
+                date: `${year}/${month}/${day} ${hr}:${min}:${sec}`,
+                from: from,
+                group: group,
+                name: name,
+                title: title,
+                url: url,
+            })
+        )
+    }
+
     function updateUserName(id, name){
         return (
             app.database().ref(`users/${id}/`).update({name: name})
@@ -57,13 +118,12 @@ export default function DatabaseProvider({children}) {
         )
     }
 
-
-    function retrieveUserDatas(email){
-        return userDbRef.orderByChild('email').equalTo(email)
-    }
-
     function updateProfilePhoto(userId, photoPath){
         return imageStorageRef.child(`${userId}.jpg`).put(photoPath)
+    }
+
+    function uploadAudio(blob, audioId){
+        return audioStorageRef.child(`${audioId}.wav`).put(blob)
     }
 
     useEffect(()=>{

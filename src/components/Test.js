@@ -1,21 +1,34 @@
-import React from 'react'
-import { useReactMediaRecorder } from "react-media-recorder";
+import React, { useRef, useState } from 'react'
+import { useAuth } from '../contexts/AuthContext';
+import { useDatabase } from '../contexts/DatabaseContext';
 
 export default function Test(){
-    const {
-        status,
-        startRecording,
-        stopRecording,
-        mediaBlobUrl,
-    } = useReactMediaRecorder({ Audio: true });
+    const toWhomFilterRef = useRef()
+    const {listAllUserDatas, getUserdatas} = useDatabase()
+    const [toWhomList, setToWhomList] = useState()
+    const {currentUser} = useAuth()
+
     
+    function handelToWhomChange(e){
+        const usersRef = listAllUserDatas(toWhomFilterRef.current.value).limitToFirst(5)
+        usersRef.on('value', (snapshot) =>{
+            const users = snapshot.val();
+            setToWhomList(users)
+        })
+    }
+    
+
     return (
         <div>
-        <p>{status}</p>
-        <button onClick={startRecording}>Start Recording</button>
-        <button onClick={stopRecording}>Stop Recording</button>
-        <audio src={mediaBlobUrl} controls/>
-        <div>{mediaBlobUrl}</div>
+            <input ref={toWhomFilterRef} onChange={handelToWhomChange} />
+            {toWhomList && Object.keys(toWhomList).map(key=>{
+                {/* console.log(toWhomList[key].group === getUserdatas(currentUser.email).group) */}
+                var returnObj = null
+                if (toWhomList[key].group === getUserdatas(currentUser.email).group){
+                    return <div>ok</div>
+                }
+                return <div>{toWhomList[key].group} {getUserdatas(currentUser.email).group} </div>
+            })}
         </div>
     );
 }

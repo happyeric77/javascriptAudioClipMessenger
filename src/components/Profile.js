@@ -36,7 +36,7 @@ export default function Profile(props) {
                             
                             {props.update && (
                                 <div class="dropdown show mt-2">
-                                    <div class="btn btn-outline-light dropdown-toggle" style={{borderRadius: '20px', maxWidth: '100px', overflow: 'hidden'}} role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="btn btn-outline-light dropdown-toggle" style={{borderRadius: '20px', width: '150px', overflow: 'hidden'}} role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {userData.name}
                                     </div>
                                     <div class="dropdown-menu dropdown-menu-left" >

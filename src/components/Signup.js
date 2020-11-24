@@ -10,13 +10,15 @@ export default function Signup() {
     const passwordRef = useRef()
     const confirmPassRef = useRef()
     const {signup} = useAuth()
-    const {groupDatas, writeUserDatas, uuid} = useDatabase()
+    const {groupDatas, writeUserDatas} = useDatabase()
     const [error, setError] = useState()
     const [signupState, setSignupState] = useState()
     const [loading, setLoading] = useState(false)
     const history = useHistory()
 
     async function handleSubmit(e){
+        setError('')
+        setSignupState('')
         e.preventDefault()
         if (passwordRef.current.value !== confirmPassRef.current.value){
             setError('Passwords do not match')
@@ -24,18 +26,21 @@ export default function Signup() {
             setError('Group secret does not match')
         }else{
             setLoading(true)
-            await writeUserDatas(uuid(), emailRef.current.value, groupRef.current.value).then(()=>{
-                setError(null)
-            }).catch(error=>{
-                setError(error.message)
-            })
             await signup(emailRef.current.value, passwordRef.current.value).then(userCred=>{
-                setSignupState('You have signed up')
-                history.push('/')
+                const user =userCred.user
+                writeUserDatas(user.uid, user.email, groupRef.current.value).then(()=>{
+                    setError(null)
+                    setSignupState('You have signed up')
+                    history.push('/')
+                }).catch(error=>{
+                    setError(error.message)
+                })
             }).catch(error=>{
                 setError(error.message)
             });
             
+            
+
             setLoading(false)
         }
     }

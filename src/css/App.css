@@ -9,6 +9,22 @@
 
 .profilePhoto {
     border-radius: 100px;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
+}
+
+.AudioLib {
+    background-color: #f2f2f2;
+    border-radius: 30px;
+}
+
+.toWhomProfile {
+    border-radius: 30px;
+    width: 150px;
+    height: 150px;
+}
+
+.toWhomProfileText {
+    width: 130px;
+    overflow: hidden;
 }
