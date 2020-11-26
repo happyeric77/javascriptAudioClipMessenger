@@ -3,7 +3,6 @@ import app from '../firebase'
 
 // IMPORTANT: 
 // 1. Firebase default Authentification's "displayName" field is used as "group name" of user
-// 2. Firebase default Authentification's "photoUrl field is used as "leader" of user
 
 
 const AuthContext = React.createContext()

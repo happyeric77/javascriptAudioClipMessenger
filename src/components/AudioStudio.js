@@ -119,7 +119,11 @@ export default function AudioStudio(props) {
             
             <div className="d-flex flex-column">
                 <div className='d-flex w-100 justify-content-center'>
-                    <img src='https://cloudinary-res.cloudinary.com/image/upload/c_fill,w_770/dpr_3.0,f_auto,fl_lossy,q_auto/waveform_post.png' alt='wave' style={{width: '500px', borderRadius:'30px', border:'3px solid grey', height: '100px'}} />
+                    {recordState ? 
+                        <img src='https://img.3dmgame.com/uploads/images/news/20200507/1588833745_696789.gif' alt='wave' style={{width: '500px', borderRadius:'30px', border:'3px solid grey', height: '100px'}} />:
+                        <img src='https://cloudinary-res.cloudinary.com/image/upload/c_fill,w_770/dpr_3.0,f_auto,fl_lossy,q_auto/waveform_post.png' alt='wave' style={{width: '500px', borderRadius:'30px', border:'3px solid grey', height: '100px'}} />
+                        
+                    }
                     <div className='h-100'>{recordTimer}</div>
                 </div>
 

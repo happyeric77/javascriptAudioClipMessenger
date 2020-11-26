@@ -25,7 +25,6 @@ export default function DatabaseProvider({children}) {
         writeUserDatas,
         writeAudioDatas,
         updateUserName,
-        updateUserLeader,
         updateProfilePhoto,
         uploadProfilePhoto,
         retrieveUserDatas,
@@ -87,7 +86,7 @@ export default function DatabaseProvider({children}) {
             name: email,
             email: email,
             group: group,
-            leader: 'Undifined',
+            leader: '',
             photoUrl: 'https://firebasestorage.googleapis.com/v0/b/a-whole-new-world-f31f9.appspot.com/o/images%2Fnoun_profile_970722.png?alt=media&token=7e9b9a49-5ab7-44a1-b6e8-bba762b6e8c9'
             })
         )
@@ -123,12 +122,6 @@ export default function DatabaseProvider({children}) {
     function updateUserGroup(id, group){
         return (
             app.database().ref(`users/${id}/`).update({group: group})
-        )
-    }
-
-    function updateUserLeader(id, leader){
-        return (
-            app.database().ref(`users/${id}/`).update({leader: leader})
         )
     }
 

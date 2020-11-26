@@ -1,10 +1,11 @@
-import React, { useRef} from 'react'
+import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useDatabase } from '../contexts/DatabaseContext'
 
 export default function AudioLib(props) {
-    const { audioDatas} = useDatabase()
+    const { audioDatas, groupDatas} = useDatabase()
     const { currentUser} = useAuth()
+
     return (
         <div className='AudioLib w-100 flex-grow-1 p-3'>
             <div className='p-3 my-2'>{props.title}</div>
@@ -13,7 +14,7 @@ export default function AudioLib(props) {
                 switch (props.fromLeader){
                     case true:
                         try {
-                            if (audioData.name === currentUser.email && audioData.group === currentUser.displayName && currentUser.photoURL.replaceAll(' ', '') === audioData.from){
+                            if (audioData.name === currentUser.email && audioData.group === currentUser.displayName && groupDatas[currentUser.displayName].leader.leader.replaceAll(' ', '') === audioData.from){
                                 return (
                                     <> 
                                         <div className='d-flex my-4' style={{backgroundColor: '#ffffff', borderRadius: '25px'}}>

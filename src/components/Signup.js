@@ -22,14 +22,14 @@ export default function Signup() {
         e.preventDefault()
         if (passwordRef.current.value !== confirmPassRef.current.value){
             setError('Passwords do not match')
-        }else if (groupSecretRef.current.value !== JSON.stringify(groupDatas[groupRef.current.value]).replaceAll('"','')){
+        }else if (groupSecretRef.current.value !== JSON.stringify(groupDatas[groupRef.current.value].secret).replaceAll('"','')){
             setError('Group secret does not match')
         }else{
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value).then(userCred=>{
                 const user =userCred.user
                 user.updateProfile({
-                    displayName: groupRef.current.value
+                    displayName: groupRef.current.value,
                 })
                 writeUserDatas(user.uid, user.email, groupRef.current.value).then(()=>{
                     setError(null)

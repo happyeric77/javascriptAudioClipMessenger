@@ -8,9 +8,7 @@ export default function UpdateProfile() {
     const [updateProfileState, setUpdateProfileState] = useState()
     const [error, setError] = useState()
     const [loading, setLoading] = useState(false)
-    const [leaderList, setLeaderList] = useState()
     const groupRef = useRef()
-    const leaderRef = useRef()
     const groupSecretRef = useRef()
     const nameRef = useRef()
     const passwordRef = useRef()
@@ -20,51 +18,9 @@ export default function UpdateProfile() {
             updateProfilePhoto, 
             retrieveUserDatas, 
             updateUserName, 
-            updateUserLeader,
             groupDatas,
-            listAllUserDatas, 
-            getUserdatas,
             updateUserGroup} = useDatabase()
     const {currentUser, updatePassword} = useAuth()
-
-
-    function handleChangeLeaderInput(e){
-        const usersRef = listAllUserDatas(leaderRef.current.value).limitToFirst(5)
-        if (leaderRef.current.value !== ''){
-            usersRef.on('value', (snapshot) =>{
-                const users = snapshot.val();
-                setLeaderList(users)
-            })
-        }else{
-            setLeaderList(null)
-        }
-    }
-    function handleSelectLeader(e){
-        document.getElementById('inputLeader').value = e.target.innerHTML
-    }
-
-    async function handleChangeLeader(e){
-        e.preventDefault()
-        setError('')
-        setUpdateProfileState('')
-        if (leaderRef.current.value !== ''){
-            await retrieveUserDatas(currentUser.email).once('value',(snapshot)=>{
-                snapshot.forEach(item=>{
-                    updateUserLeader(item.val().id, leaderRef.current.value).then(message=>{
-                        currentUser.updateProfile({
-                            photoURL: leaderRef.current.value
-                        })
-                        setUpdateProfileState('Leader updated successfully')
-                        document.getElementById('inputLeader').value = ''
-                    }).catch(message=>{
-                        setError(message)
-                    })
-                })
-            })
-        } else {
-            setError('Leader cannot be empty')
-        }
-    }
 
     async function handleUploadPhoto(e){
         e.preventDefault()
@@ -116,7 +72,7 @@ export default function UpdateProfile() {
         setUpdateProfileState('')
         if (groupSecretRef.current.value === ''){
             setError('Group cannot be empty')
-        }else if (groupSecretRef.current.value === JSON.stringify(groupDatas[groupRef.current.value]).replaceAll('"','')){
+        }else if (groupSecretRef.current.value === JSON.stringify(groupDatas[groupRef.current.value].secret).replaceAll('"','')){
             await retrieveUserDatas(currentUser.email).once('value',(snapshot)=>{
                 snapshot.forEach(item=>{
                     updateUserGroup(item.val().id, groupRef.current.value).then(message=>{
@@ -188,21 +144,6 @@ export default function UpdateProfile() {
                         <input ref={groupSecretRef} className="form-control" id="inputGroupSecret" aria-describedby="groupHelp" placeholder="Enter new group secret"/>
                     </div>
                     <button onClick={handleChangeGroup} className="btn btn-warning my-2" style={{width:'100%'}}>Change group</button>
-
-                    {/* Update Leader section */}
-                    <div className="form-group">
-                        <label htmlFor="inputGroup"><Profile leader={true}/></label>
-                        <input ref={leaderRef} onChange={handleChangeLeaderInput} className="form-control" id="inputLeader" aria-describedby="leaderHelp" placeholder="Select your leader"/>
-                        <div className='select-leader'>
-                            {leaderList && Object.keys(leaderList).map(key=>{
-                                if (leaderList[key].group === getUserdatas(currentUser.email).group){
-                                    return <div onClick={handleSelectLeader} className='btn btn-light w-100'> {(leaderList[key].email)}</div>
-                                }
-                            })}
-                        </div>
-                    </div>
-                    <button onClick={handleChangeLeader} className="btn btn-warning my-2" style={{width:'100%'}}>Change Leader</button>
-
 
                     {/* Update password section */}
                     <div className="form-group">
