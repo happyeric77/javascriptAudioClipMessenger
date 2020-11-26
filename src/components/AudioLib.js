@@ -14,7 +14,7 @@ export default function AudioLib(props) {
                 switch (props.fromLeader){
                     case true:
                         try {
-                            if (audioData.name === currentUser.email && audioData.group === currentUser.displayName && groupDatas[currentUser.displayName].leader.leader.replaceAll(' ', '') === audioData.from){
+                            if (audioData.name === 'leaderMessage' && audioData.group === currentUser.displayName){
                                 return (
                                     <> 
                                         <div className='d-flex my-4' style={{backgroundColor: '#ffffff', borderRadius: '25px'}}>
@@ -41,7 +41,6 @@ export default function AudioLib(props) {
                                         <div className='col col-2 m-auto'> {audioData.from}</div>
                                         <audio className='flex-grow-1' src={audioData.url} controls  />
                                     </div>
-                                    
                                 </>
                             )
                         }

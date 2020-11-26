@@ -18,6 +18,46 @@ export default function AudioStudio(props) {
     const recordtimerRef = useRef()
     const {uploadAudio, audioIdGen, getUserdatas, writeAudioDatas, listAllUserDatas} = useDatabase()
     const {currentUser} = useAuth()
+    
+    async function startUpload(audioId, userDatas){
+        if (mediaBlobUrl && titleRef.current.value !== '' && toWhomRef.current.value !== ''){
+            await fetch(mediaBlobUrl).then(res=>{
+                res.blob().then(blob=>{
+                    const uploadTask = uploadAudio(blob, audioId)
+                    uploadTask.on('state_changed', (snapshot)=>{
+                        alert('Audio uploaded Successfully')
+                    }, (error)=>{
+                        alert(error)
+                    }, ()=>{
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL)=>{
+                            console.log('File available at', downloadURL);
+                            writeAudioDatas(
+                                audioId, 
+                                userDatas.email, 
+                                userDatas.group, 
+                                toWhomRef.current.value,
+                                titleRef.current.value,
+                                downloadURL,
+                            ).then(message=>{
+                                console.log(message)
+                            }).catch(error=>{
+                                console.log(error)
+                            })
+                            document.getElementById('inputAudioTitle').value = ''
+                            document.getElementById('inputToWhom').value = ''
+                            setRecordTimer(0)
+                        })
+                    })
+                }).catch(error=>{
+                    alert(error)
+                })
+            }).catch(error=>{
+                alert(error)
+            })
+        } else {
+            alert('Audio file or title or toWhom field does not exist.')
+        }
+    }
 
     function handelToWhomChange(e){
         const dataRef = listAllUserDatas(toWhomRef.current.value).limitToFirst(4)
@@ -30,60 +70,31 @@ export default function AudioStudio(props) {
         document.getElementById('inputToWhom').value = e.target.alt
     }
 
+
     // Ｕpload Audio buttun click function
     async function handleUploadAudio(){
         const audioId = audioIdGen(currentUser.email)
         const userDatas = getUserdatas(currentUser.email)
+        if (props.forLeader){
+            document.getElementById('inputToWhom').value = 'leaderMessage'
+        }
         if (getUserdatas(toWhomRef.current.value)){
-            if (mediaBlobUrl && titleRef.current.value !== '' && toWhomRef.current.value !== ''){
-                await fetch(mediaBlobUrl).then(res=>{
-                    res.blob().then(blob=>{
-                        const uploadTask = uploadAudio(blob, audioId)
-                        uploadTask.on('state_changed', (snapshot)=>{
-                            alert('Audio uploaded Successfully')
-                        }, (error)=>{
-                            alert(error)
-                        }, ()=>{
-                            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL)=>{
-                                console.log('File available at', downloadURL);
-                                writeAudioDatas(
-                                    audioId, 
-                                    userDatas.email, 
-                                    userDatas.group, 
-                                    toWhomRef.current.value,
-                                    titleRef.current.value,
-                                    downloadURL,
-                                ).then(message=>{
-                                    console.log(message)
-                                }).catch(error=>{
-                                    console.log(error)
-                                })
-                                document.getElementById('inputAudioTitle').value = ''
-                                document.getElementById('inputToWhom').value = ''
-                                setRecordTimer(0)
-                            })
-                        })
-                    }).catch(error=>{
-                        alert(error)
-                    })
-                }).catch(error=>{
-                    alert(error)
-                })
-            } else {
-                alert('Audio file or title or toWhom field does not exist.')
-            }
+            startUpload(audioId, userDatas)
+        }else if(toWhomRef.current.value === 'leaderMessage'){
+            startUpload(audioId, userDatas)
         } else {
             alert('The seleted user is not a registered user')
         }
-        
-        
     }
 
     // Effect to handle record/stop record button
     useEffect(()=>{
-        console.log(recordState)
         if (recordState){
-            startRecording()
+            startRecording().then(message=>{
+                console.log('Recording started')
+            }).catch(error=>{
+                console.log(error)
+            })
             recordtimerRef.current = setInterval(()=>{
                 setRecordTimer(prev=>prev+1)
             }, 1000)
@@ -97,7 +108,8 @@ export default function AudioStudio(props) {
         <div className='AudioLib w-100 flex-grow-1 p-3'>
             <div className='d-flex align-items-center'>
                 <div className='p-3 my-2'　onClick={()=>console.log(currentUser.uid)}>{props.title}</div>
-                <input id='inputToWhom' onChange={handelToWhomChange} className='h-50' ref={toWhomRef} placeholder='誰に伝えたい' />
+                <input id='inputToWhom' onChange={handelToWhomChange} className='h-50' ref={toWhomRef} placeholder='誰に伝えたい' hidden={props.forLeader ? true: false}/>
+                
                 <input id='inputAudioTitle' className='h-50 col-5' ref={titleRef} placeholder='タイトルを入力ください' />
             </div>
 
