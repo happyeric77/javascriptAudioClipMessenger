@@ -25,20 +25,18 @@ export default function DatabaseProvider({children}) {
         writeUserDatas,
         writeAudioDatas,
         updateUserName,
-        uuid,
+        updateUserLeader,
         updateProfilePhoto,
+        uploadProfilePhoto,
         retrieveUserDatas,
         listAllUserDatas,
         getUserdatas,
+        getAudioDatas,
         updateUserGroup,
         uploadAudio,
         audioIdGen,
     }
     
-
-    function uuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
-    }
 
     function audioIdGen(userEmail){
         // {group}-{email}-{date}
@@ -63,6 +61,16 @@ export default function DatabaseProvider({children}) {
             })
         })
         return user
+    }
+
+    function getAudioDatas(){
+        audioDbRef.orderByChild('from').once('value', (snapshot)=>{
+            const audioDatas =[]
+            snapshot.forEach(item=>{
+                audioDatas.push(item.val())
+            })
+        })
+        return audioDatas
     }
 
     //Retrieve all users' list by the order
@@ -118,8 +126,20 @@ export default function DatabaseProvider({children}) {
         )
     }
 
-    function updateProfilePhoto(userId, photoPath){
-        return imageStorageRef.child(`${userId}.jpg`).put(photoPath)
+    function updateUserLeader(id, leader){
+        return (
+            app.database().ref(`users/${id}/`).update({leader: leader})
+        )
+    }
+
+    function uploadProfilePhoto(userId, photoFile){
+        return imageStorageRef.child(`${userId}.jpg`).put(photoFile)
+    }
+
+    function updateProfilePhoto(id, photoFileUrl){
+        return (
+            app.database().ref(`users/${id}/`).update({photoUrl: photoFileUrl})
+        )
     }
 
     function uploadAudio(blob, audioId){
@@ -147,7 +167,7 @@ export default function DatabaseProvider({children}) {
             groupDbRef.on('value', (snapshot)=>{
                 const raw = snapshot.val()
                 setGroupDatas(raw)
-            })
+            }),
         ]
         Promise.all(promises).then(()=>{
             setLoading(false)

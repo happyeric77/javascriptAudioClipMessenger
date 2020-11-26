@@ -11,24 +11,28 @@ export default function Test(){
     
     function handelToWhomChange(e){
         const usersRef = listAllUserDatas(toWhomFilterRef.current.value).limitToFirst(5)
-        usersRef.on('value', (snapshot) =>{
-            const users = snapshot.val();
-            setToWhomList(users)
-        })
+        if (toWhomFilterRef.current.value !== ''){
+            usersRef.on('value', (snapshot) =>{
+                const users = snapshot.val();
+                setToWhomList(users)
+            })
+        }else{
+            setToWhomList(null)
+        }
     }
     
 
     return (
         <div>
             <input ref={toWhomFilterRef} onChange={handelToWhomChange} />
+            <div className='select-leader'>
             {toWhomList && Object.keys(toWhomList).map(key=>{
-                {/* console.log(toWhomList[key].group === getUserdatas(currentUser.email).group) */}
-                var returnObj = null
                 if (toWhomList[key].group === getUserdatas(currentUser.email).group){
-                    return <div>ok</div>
+                    return <div className='btn btn-outline-dark'> {(toWhomList[key].email)}</div>
                 }
-                return <div>{toWhomList[key].group} {getUserdatas(currentUser.email).group} </div>
             })}
+            </div>
+
         </div>
     );
 }

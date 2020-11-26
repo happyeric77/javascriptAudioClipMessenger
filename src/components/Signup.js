@@ -28,6 +28,9 @@ export default function Signup() {
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value).then(userCred=>{
                 const user =userCred.user
+                user.updateProfile({
+                    displayName: groupRef.current.value
+                })
                 writeUserDatas(user.uid, user.email, groupRef.current.value).then(()=>{
                     setError(null)
                     setSignupState('You have signed up')
@@ -38,8 +41,6 @@ export default function Signup() {
             }).catch(error=>{
                 setError(error.message)
             });
-            
-            
 
             setLoading(false)
         }

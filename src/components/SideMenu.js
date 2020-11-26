@@ -1,5 +1,6 @@
 import React from 'react'
 import Profile from './Profile'
+import Test from './Test'
 
 export default function SideMenu(props) {
 

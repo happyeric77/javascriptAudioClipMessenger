@@ -34,11 +34,12 @@ export default function Dashboard() {
 
 
     return (
-        <>
+        <>  
+        
             <div className="d-flex ">
                 <SideMenu switch={handleSwitch} />
-                {leaderMessageLib && <AudioLib  title='リーダーからの話'/>}
-                {allMessagesLib && <AudioLib title='メッセージを聞く'/>}
+                {leaderMessageLib && <AudioLib  title='リーダーからの話' fromLeader={true} />}
+                {allMessagesLib && <AudioLib title='メッセージを聞く' fromLeader={false}/>}
                 {studioRoom && <AudioStudio title='メッセージを送信する' />}
 
             </div>
