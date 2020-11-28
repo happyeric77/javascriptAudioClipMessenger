@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useReactMediaRecorder } from "react-media-recorder";
 import { useDatabase } from '../contexts/DatabaseContext';
 import {useAuth} from '../contexts/AuthContext'
+import {useZoom} from '../index'
 
 export default function AudioStudio(props) {
 
@@ -15,9 +16,12 @@ export default function AudioStudio(props) {
     const [recordState, setRecordState] = useState(false)
     const titleRef = useRef()
     const toWhomRef = useRef()
+    const meetingIdRef = useRef()
+    const meetingPasswordRef = useRef()
     const recordtimerRef = useRef()
     const {uploadAudio, audioIdGen, getUserdatas, writeAudioDatas, listAllUserDatas} = useDatabase()
     const {currentUser} = useAuth()
+    const {getSignature} = useZoom()
     
     async function startUpload(audioId, userDatas){
         if (mediaBlobUrl && titleRef.current.value !== '' && toWhomRef.current.value !== ''){
@@ -106,8 +110,13 @@ export default function AudioStudio(props) {
 
     return (
         <div className='AudioLib w-100 flex-grow-1 p-3'>
+
+            <input id='inputMeetingId' className='mx-1' ref={meetingIdRef} placeholder='ルーム番号' hidden={props.forLeader ? false: true}/>
+            <input id='inputMeetingPassword' className='mx-1' ref={meetingPasswordRef} placeholder='ルーム暗証番号' hidden={props.forLeader ? false: true}/>
+            <div className='btn btn-danger w-30 ml-5' style={props.forLeader ? {display: 'inline-block'}: {display: 'none'}} onClick={()=>{getSignature(currentUser.email ,meetingIdRef.current.value, meetingPasswordRef.current.value)}}>GO</div>
+            <hr/>
             <div className='d-flex align-items-center'>
-                <div className='p-3 my-2'　onClick={()=>console.log(currentUser.uid)}>{props.title}</div>
+                <div className='p-3 my-1'　onClick={()=>console.log(currentUser.uid)}>{props.title}</div>
                 <input id='inputToWhom' onChange={handelToWhomChange} className='h-50' ref={toWhomRef} placeholder='誰に伝えたい' hidden={props.forLeader ? true: false}/>
                 
                 <input id='inputAudioTitle' className='h-50 col-5' ref={titleRef} placeholder='タイトルを入力ください' />

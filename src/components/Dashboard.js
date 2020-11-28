@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react'
 import AudioLib from './AudioLib'
 import AudioStudio from './AudioStudio'
 import SideMenu from './SideMenu'
+import Test from './Test'
+
 
 export default function Dashboard() {
     const [allMessagesLib, setAllMessageLib] = useState(true)
     const [leaderMessageLib, setLeaderMessageLib] = useState(false)
     const [studioRoom, setStudioRoom] = useState(false)
     const [leaderStudioRoom, setLeaderStudioRoom] = useState(false)
+    
     
 
     function handleSwitch(e){
@@ -48,8 +51,8 @@ export default function Dashboard() {
     return (
         <>  
             <div className="d-flex ">
-                <div></div>
                 <SideMenu switch={handleSwitch} />
+                
                 {leaderStudioRoom && <AudioStudio title='リーダーからの話（録音）' forLeader={true} />}
                 {leaderMessageLib && <AudioLib  title='リーダーからの話' fromLeader={true} />}
                 {allMessagesLib && <AudioLib title='メッセージを聞く' fromLeader={false}/>}

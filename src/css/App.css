@@ -1,3 +1,6 @@
+html, body {
+    overflow: scroll !important;
+}
 
 .App {
     background-color: #f2d022;
@@ -29,6 +32,49 @@
     overflow: hidden;
 }
 
-.select-leader {
-    /* position: absolute; */
+
+#zmmtg-root {
+    width: 50% !important;
+    height: 50% !important;
+    
+}
+
+.meeting-app{
+    width: 50% !important;
+    height: 50% !important;
+}
+
+#wc-header {
+    width: 200px !important;
+}
+
+
+.suspension-window {
+    transform: translate(-444px, 10px) !important;
+        
+}
+
+#zmmtg-root, .meeting-client, .meeting-client-inner {
+    width: 50% !important;
+    height: 40% !important;
+    position: relative;
+    top: 30% !important;
+    left: 35% !important;
+}
+
+#wc-footer {
+    width: 50% !important;
+}
+
+#dialog-join {
+    width: 50% !important;
+}
+
+#sv-active-video, .active-main, #sv-active-speaker-view, .main-layout {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.suspension-window {
+    transform: translate(-444px, 10px) !important;
 }

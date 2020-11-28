@@ -7,23 +7,24 @@ import PrivateRoute from './PrivateRoute'
 import ResetPassword from './ResetPassword';
 import DatabaseProvider from '../contexts/DatabaseContext';
 import UpdateProfile from './UpdateProfile';
+import ZoomProvider from '../index'
 import '../css/App.css'
 
-function App() {
+function App(props) {
   return (
     <div className='App'>
     <Router>
       <DatabaseProvider>
         <AuthProvider>
-        
-          <Switch>
-            <PrivateRoute exact path='/' component={Dashboard} />
-            <PrivateRoute path='/update-profile' component={UpdateProfile} />
-            <Route path='/signup' component={Signup} />
-            <Route path='/login' component={Login} />
-            <Route path='/reset-password' component={ResetPassword} />
-          </Switch>
-        
+          <ZoomProvider>
+            <Switch>
+              <PrivateRoute exact path='/' component={Dashboard} />
+              <PrivateRoute path='/update-profile' component={UpdateProfile} />
+              <Route path='/signup' component={Signup} />
+              <Route path='/login' component={Login} />
+              <Route path='/reset-password' component={ResetPassword} />
+            </Switch>
+          </ZoomProvider>
         </AuthProvider>
       </DatabaseProvider>
     </Router>
