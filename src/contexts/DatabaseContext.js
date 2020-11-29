@@ -34,6 +34,8 @@ export default function DatabaseProvider({children}) {
         updateUserGroup,
         uploadAudio,
         audioIdGen,
+        updateAudioDatas,
+        deleteAudio,
     }
     
 
@@ -92,7 +94,7 @@ export default function DatabaseProvider({children}) {
         )
     }
 
-    function writeAudioDatas(AudioId, from, group, name, title, url){
+    function writeAudioDatas(audioId, from, group, name, title, url){
         const date = new Date()
         const [year, month, day, hr, min, sec] = [
             date.getFullYear(),
@@ -103,16 +105,24 @@ export default function DatabaseProvider({children}) {
             date.getSeconds()
         ]
         return (
-            app.database().ref(`records/${AudioId}/`).set({
+            app.database().ref(`records/${audioId}/`).set({
+                audioId: audioId,
+                timestamp: date.getTime(),
                 date: `${year}/${month}/${day} ${hr}:${min}:${sec}`,
                 from: from,
                 group: group,
                 name: name,
                 title: title,
                 url: url,
+                editable: true,
             })
         )
     }
+
+    function updateAudioDatas(audioId, content){
+        app.database().ref(`records/${audioId}/`).set(content)
+    }
+
 
     function updateUserName(id, name){
         return (
@@ -139,11 +149,29 @@ export default function DatabaseProvider({children}) {
         return audioStorageRef.child(`${audioId}.wav`).put(blob)
     }
 
+    function deleteAudio(audioId){
+        return audioStorageRef.child(`${audioId}.wav`).delete()
+    }
+
     useEffect(()=>{
         const promises = [
             audioDbRef.on('value', (snapshot)=>{
                 const raw = snapshot.val()
                 const datas = Object.keys(raw).map(key=> {
+                    var now = new Date()
+                    const audioId = raw[key].audioId
+                    now = now.getTime()
+                    // Make audio clip not deletable 5 mins after created
+                    if (now - raw[key].timestamp > 5*60*1000){
+                        app.database().ref(`records/${audioId}/`).update({editable: false})
+                    }
+                    // Delete audio clip 7 days after created
+                    if (now - raw[key].timestamp > 7*24*60*60*1000){
+                            audioStorageRef.child(`${audioId}.wav`).delete().then(()=>{
+                            console.log('over 20sec and deleted')
+                            app.database().ref(`records/${audioId}/`).set(null)
+                        })
+                    }
                     const tempdatas = {...raw[key], id: key}
                     return tempdatas
                 })            

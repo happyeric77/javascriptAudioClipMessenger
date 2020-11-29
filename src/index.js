@@ -33,8 +33,6 @@ export default function ZoomProvider({children}){
 
     return signature
   }
-  console.log(process.env.ZOOM_API_KEY)
-  console.log(process.env.ZOOM_API_SECRET)
   function getSignature(userEmail, meetingId, meetingPassword) {
     zoomMeeting.style.display='inline-block'
     const userName = userEmail

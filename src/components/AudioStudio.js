@@ -41,7 +41,7 @@ export default function AudioStudio(props) {
                                 userDatas.group, 
                                 toWhomRef.current.value,
                                 titleRef.current.value,
-                                downloadURL,
+                                downloadURL
                             ).then(message=>{
                                 console.log(message)
                             }).catch(error=>{
@@ -49,7 +49,6 @@ export default function AudioStudio(props) {
                             })
                             document.getElementById('inputAudioTitle').value = ''
                             document.getElementById('inputToWhom').value = ''
-                            setRecordTimer(0)
                         })
                     })
                 }).catch(error=>{
@@ -157,7 +156,6 @@ export default function AudioStudio(props) {
                     <audio src={mediaBlobUrl} controls/>
                 </div>
             </div>
-            
         </div>
     )
 }

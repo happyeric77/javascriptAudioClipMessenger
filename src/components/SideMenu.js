@@ -21,6 +21,7 @@ export default function SideMenu(props) {
                     <div className='mt-5 mb-3 h6'>気持ちの交換</div>
                     <div className='m-3' onClick={props.switch}>メッセージを送信する</div>
                     <div className='m-3' onClick={props.switch}>メッセージを聞く</div>
+                    <div className='m-3' onClick={props.switch}>送信履歴</div>
                 </div>
             </div>
         </div>
